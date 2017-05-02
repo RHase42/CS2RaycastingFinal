@@ -5,7 +5,8 @@ import java.awt.event.KeyListener;
 public class Player implements KeyListener {
 	double x, y, xDir, yDir, direction;
 	
-	double moveSpeed = .5;
+	double moveSpeed = .8;
+	double rotSpeed = 1.2;
 	
 	int[][] map;
 	boolean forward, backward, left, right;
@@ -68,14 +69,25 @@ public class Player implements KeyListener {
 			}
 		}
 		if (left) {
-			direction += 0.9;
+			direction += rotSpeed;
+			direction = normalizeTurn(direction);
+			System.out.println(direction);
 		}
 		if (right) {
-			direction -= 0.9;
+			direction -= rotSpeed;
+			direction = normalizeTurn(direction);
+			System.out.println(direction);
 		}
-
 	}
 
+	public double normalizeTurn(double angle) {
+		double a = angle % 360;
+		if (a < 0) {
+			a += 360;
+		}
+		return a;
+	}
+	
 	@Override
 	public void keyTyped(KeyEvent arg0) {
 		// TODO Auto-generated method stub

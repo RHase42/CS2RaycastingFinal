@@ -10,7 +10,6 @@ public class Game extends JFrame implements Runnable {
 	boolean isRunning;
 	Player player;
 	public BufferedImage image;
-	public int[] pixels;
 	public int[][] map;
 	public Maze maze;
 	
@@ -48,37 +47,22 @@ public class Game extends JFrame implements Runnable {
 		}
 		setVisible(false);
 	}
-	
-//	public void render () {
-//		BufferStrategy bs = getBufferStrategy();
-//		if(bs == null) {
-//			createBufferStrategy(3);
-//			return;
-//		}
-//		Graphics g = bs.getDrawGraphics();
-//		g.drawImage(image, insets.left, insets.top, image.getWidth(), image.getHeight(), this);
-//
-//
-//		g.setColor(Color.BLUE);
-//		for (int i = (-WIDTH/2); i < WIDTH/2; i+= 3) {
-//			rayDraw(player.x, player.y, i, g);
-//		}
-//
-//		bs.show();
-//	}
-	
-	
-// 	2D Raycasting test
-	
+		
 	public void render () {
 		BufferStrategy bs = getBufferStrategy();
 		if(bs == null) {
 			createBufferStrategy(3);
 			return;
 		}
-		Graphics g = bs.getDrawGraphics();
-		g.drawImage(image, insets.left, insets.top, image.getWidth(), image.getHeight(), this);
+		Graphics buff = bs.getDrawGraphics();
+		Graphics g = image.getGraphics();
+		draw(g);
 		
+		buff.drawImage(image, insets.left, insets.top, image.getWidth(), image.getHeight(), this);
+		bs.show();
+	}
+	
+	public void draw(Graphics g) {
 		g.setColor(Color.WHITE);
 		for (int i = 0; i < map.length; i++) {
 			for (int j = 0; j < map.length; j++) {
@@ -98,12 +82,6 @@ public class Game extends JFrame implements Runnable {
 		for (int i = -30; i < 30; i++) {
 			rayDraw(player.x, player.y, i, g);
 		}
-
-		bs.show();
-	}
-	
-	public void draw() {
-		
 	}
 	
 	public double rayDraw (double x, double y, int i, Graphics g) {
@@ -112,14 +90,14 @@ public class Game extends JFrame implements Runnable {
 		double sin = Math.sin(angle);
 		double cos = Math.cos(angle);
 		
-		int px, py;
+		int x2, y2;
 		
 		do {
 			length += .1;
-			px = (int) (x + length*sin);
-			py = (int) (y + length*cos);
+			x2 = (int) (x + length*sin);
+			y2 = (int) (y + length*cos);
 			
-		} while (map[px/32][py/32] != 1);
+		} while (map[x2/32][y2/32] != 1);
 		// drawWall(g, length, i, angle);
 		g.drawLine((int)x, (int)y, (int)(x + length*sin), (int)(y + length *cos));
 
@@ -144,7 +122,6 @@ public class Game extends JFrame implements Runnable {
 		setSize(insets.left + WIDTH + insets.right, insets.top + HEIGHT + insets.bottom);
 		
 		image = new BufferedImage (WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
-		pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
 		newMap();
 		player = new Player(48, 48, 0, map, this);
 
