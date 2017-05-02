@@ -98,13 +98,13 @@ public class Game extends JFrame implements Runnable {
 			x2 = (int) (x + length*sin);
 			y2 = (int) (y + length*cos);
 		} while (map[x2/32][y2/32] != 1);
-		// drawWall(g, length, i+400, angle);
+		drawWall(g, length, i+400, angle);
 		g.drawLine((int)x, (int)y, (int)(x + length*sin), (int)(y + length *cos));
 		return length;
 	}
 	
 	public void drawWall(Graphics g, double dist, int x, double angle) {
-        int wallHeight = (int) (PLAYER_HEIGHT * WALL_SIZE / (dist * Math.cos(angle)));
+        int wallHeight = (int) (PLAYER_HEIGHT * HEIGHT / (dist * Math.cos(angle)));
 
         g.setColor(Color.BLUE);
         g.drawLine(x, HEIGHT / 2 - wallHeight, x, HEIGHT / 2 + wallHeight);
