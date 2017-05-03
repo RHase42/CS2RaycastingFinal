@@ -5,7 +5,7 @@ import java.awt.event.KeyListener;
 public class Player implements KeyListener {
 	double x, y, xDir, yDir, direction;
 	
-	double moveSpeed = .6;
+	double moveSpeed = .5;
 	double rotSpeed = 1.2;
 	
 	int[][] map;

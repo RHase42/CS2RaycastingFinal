@@ -1,31 +1,31 @@
 import java.awt.*;
-import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import javax.swing.JFrame; 
 
-
 public class Game extends JFrame implements Runnable {
-	
+
+	private static final long serialVersionUID = 1L;
 	boolean isRunning;
 	Player player;
 	public BufferedImage image;
 	public int[][] map;
 	public Maze maze;
+	Point goal;
 	
 	final int PLAYER_HEIGHT = 32;
 	final int WALL_SIZE = 64;
-	final int FOV = 60;
+	final int FOV = 80;
 	final int WIDTH = 800;
 	final int HEIGHT = 600;
 	final int FPS = 60;
 	final double ANGLE_INC = (double)FOV/(double)WIDTH;
-	final double PROJ_DIST = (WIDTH/2) / Math.tan(Math.toRadians(FOV/2));
+	final double PROJ_DIST = (HEIGHT/2) / Math.tan(Math.toRadians(FOV/2));
 	final int CENTER_WIDTH = WIDTH/2;
 	final int CENTER_HEIGHT = HEIGHT/2;
 	
-	
 	Insets insets;
 	
+
 	public void newMap() {
 		maze = new Maze(8, 8);
 		this.map = maze.generateMap();
@@ -35,36 +35,26 @@ public class Game extends JFrame implements Runnable {
 		init();
 		while(isRunning) {
 			long frameTime = System.currentTimeMillis();
+			draw();
 			update();
 			frameTime = (1000 / FPS) - (System.currentTimeMillis() - frameTime);
-			
 			if (frameTime > 0) {
 				try {
 					Thread.sleep(frameTime);
-				} catch (Exception e) {
-					
-				}
+				} catch (Exception e) {}
 			}
-			render();
 		}
-		setVisible(false);
 	}
-		
-	public void render () {
-		BufferStrategy bs = getBufferStrategy();
-		if(bs == null) {
-			createBufferStrategy(3);
-			return;
-		}
-		Graphics buff = bs.getDrawGraphics();
-		Graphics g = image.getGraphics();
-		draw3D(g);
-		
-		buff.drawImage(image, insets.left, insets.top, image.getWidth(), image.getHeight(), this);
-		bs.show();
+			
+	public void draw () {
+		Graphics g = getGraphics();
+		Graphics buffG = image.getGraphics();
+		draw3D(buffG);
+		g.drawImage(image, insets.left, insets.top, this);
+		g.dispose();
 	}
 	
-	public void draw(Graphics g) {
+	public void draw2D(Graphics g) {
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, WIDTH, HEIGHT);
 		
@@ -80,7 +70,7 @@ public class Game extends JFrame implements Runnable {
 		g.fillOval((int)player.x - 10, (int)player.y - 10, 20, 20);
 
 		g.setColor(Color.PINK);
-		g.fillOval((int)maze.goal.getX() * 32, (int)maze.goal.getY() * 32, 20, 20);
+		g.fillOval((int)goal.getX() * 32, (int)goal.getY() * 32, 20, 20);
 		
 		g.setColor(Color.BLUE);
 		for (int i = -(WIDTH/2); i < (WIDTH/2); i++) {
@@ -97,14 +87,13 @@ public class Game extends JFrame implements Runnable {
 		g.setColor(Color.CYAN);
 		g.fillRect(0, 0, WIDTH, HEIGHT/2);
 		
-		g.setColor(Color.GRAY);
+		g.setColor(Color.PINK);
 		g.fillRect(0, HEIGHT/2, WIDTH, HEIGHT/2);
 		
-		g.setColor(Color.BLUE);
 		for (int i = -(WIDTH/2); i < (WIDTH/2); i++) {
 			double angle = Math.toRadians(player.direction + (i *ANGLE_INC));
 			double length = rayCast(player.x, player.y, angle, i, g);
-			drawWall(g, length, i+400, angle);
+			drawWall(g, length, i+(WIDTH/2), angle);
 		}
 	}
 	
@@ -118,15 +107,18 @@ public class Game extends JFrame implements Runnable {
 			x2 = (int) (x + length*sin);
 			y2 = (int) (y + length*cos);
 		} while (map[x2/32][y2/32] != 1);
-
 		return length;
 	}
 	
 	public void drawWall(Graphics g, double dist, int x, double angle) {
 		double relativeAngle = Math.toRadians(player.direction) - angle;
 		double adjDist = dist * Math.cos(relativeAngle);
-        double wallHeight = (32*CENTER_HEIGHT / (adjDist));
-        g.setColor(Color.BLUE);
+        double wallHeight = (32*PROJ_DIST / (adjDist));
+        int intensity = (int)(adjDist);
+        if (intensity > 255) {
+        	intensity = 255;
+        }
+        g.setColor(new Color(255-intensity,0,255-intensity));
         g.drawLine(x, CENTER_HEIGHT - (int)wallHeight, x, CENTER_HEIGHT + (int)wallHeight);
 	}
 		
@@ -142,8 +134,8 @@ public class Game extends JFrame implements Runnable {
 		
 		image = new BufferedImage (WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 		newMap();
+		this.goal = maze.goal;
 		player = new Player(48, 48, 0, map, this);
-
 		start();
 	}
 	
