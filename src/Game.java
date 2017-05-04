@@ -133,9 +133,10 @@ public class Game extends JFrame implements Runnable {
 		
 		this.titleScreen = new Title(WIDTH,HEIGHT, this);
 		this.add(titleScreen);
+		this.frame = new JPanel();
+
 		setIsTitle(true);
 
-		this.frame = new JPanel();
 		this.add(frame);
 		frame.setDoubleBuffered(true);
 		
@@ -172,8 +173,13 @@ public class Game extends JFrame implements Runnable {
 		this.isTitle = isTitle;
 		if (isTitle) {
 			titleScreen.setEnabled(true);
+			titleScreen.setActive(true);
+			frame.setEnabled(false);
+			frame.transferFocus();
+			titleScreen.requestFocus();
 		} else {
 			titleScreen.setEnabled(false);
+			frame.setEnabled(true);
 			titleScreen.transferFocus();
 			frame.requestFocus();
 		}

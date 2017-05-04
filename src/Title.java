@@ -78,7 +78,7 @@ public class Title extends JPanel implements ActionListener {
     }
 
     void setActive (boolean isActive) {
-		this.setEnabled(isActive);
+    	this.setVisible(isActive);
 		Component [] buttons = this.getComponents();
 		for (Component button: buttons) {
 			button.setEnabled(isActive);
