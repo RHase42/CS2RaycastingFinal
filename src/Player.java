@@ -3,45 +3,50 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 public class Player implements KeyListener {
-	double x, y, xDir, yDir, direction;
-	
-	double moveSpeed = .5;
-	double rotSpeed = 1.2;
+	double x, y, startX, startY,direction;
+	Game engine;
+	private double moveSpeed = .75;
+	private double rotSpeed = 1.5;
 	
 	int[][] map;
 	boolean forward, backward, left, right;
 	
-	public Player (int x, int y, int direction, int[][] map,Component c) {
+	public Player (int x, int y, int direction, int[][] map, Game engine, Component t) {
 		this.x = x;
+		this.startX = x;
 		this.y = y;
-		this.xDir = x;
-		this.yDir = y;
+		this.startY = y;
 		this.direction = direction;
 		this.map = map;
-		c.addKeyListener(this);
+		this.engine = engine;
+		engine.addKeyListener(this);
+		t.addKeyListener(this);
 	}
 
 	@Override
 	public void keyPressed(KeyEvent keypress) {
-		if((keypress.getKeyCode() == KeyEvent.VK_A))
+		if(keypress.getKeyCode() == KeyEvent.VK_A)
 			left = true;
-		if((keypress.getKeyCode() == KeyEvent.VK_D))
+		if(keypress.getKeyCode() == KeyEvent.VK_D)
 			right = true;
-		if((keypress.getKeyCode() == KeyEvent.VK_W))
+		if(keypress.getKeyCode() == KeyEvent.VK_W)
 			forward = true;
-		if((keypress.getKeyCode() == KeyEvent.VK_S))
+		if(keypress.getKeyCode() == KeyEvent.VK_S)
 			backward = true;		
+		if (keypress.getKeyCode() == KeyEvent.VK_R) {x=startX;y=startY;direction=0;}
+		if (keypress.getKeyCode() == KeyEvent.VK_ESCAPE) {engine.setIsTitle(true);}
+			
 	}
 
 	@Override
 	public void keyReleased(KeyEvent keyRelease) {
-		if((keyRelease.getKeyCode() == KeyEvent.VK_A))
+		if(keyRelease.getKeyCode() == KeyEvent.VK_A)
 			left = false;
-		if((keyRelease.getKeyCode() == KeyEvent.VK_D))
+		if(keyRelease.getKeyCode() == KeyEvent.VK_D)
 			right = false;
-		if((keyRelease.getKeyCode() == KeyEvent.VK_W))
+		if(keyRelease.getKeyCode() == KeyEvent.VK_W)
 			forward = false;
-		if((keyRelease.getKeyCode() == KeyEvent.VK_S))
+		if(keyRelease.getKeyCode() == KeyEvent.VK_S)
 			backward = false;		
 	}
 	

@@ -5,18 +5,27 @@ import java.util.Collections;
 
 
 public class Maze {
-	int width;
-	int height;
+	private int width;
+	private int height;
 	private int[][] maze;
 	private int[][] map;
-	Point goal;
+	private Point goal;
+	private Point playerStart;
 
 	public Maze(int x, int y) {
 		this.width = x;
 		this.height = y;
 		this.maze = new int[width][height];
 		createMaze(0,0);
-		setGoal();
+		setPoints();
+	}
+	
+	public Point getGoal() {
+		return goal;
+	}
+	
+	public Point getStart () {
+		return playerStart;
 	}
 	
 	private void createMaze(int cWidth, int cHeight) {
@@ -72,11 +81,11 @@ public class Maze {
 		return map;
 	}
 	
-	public void setGoal () {
+	public void setPoints () {
 		generateMap();
 		ArrayList<Point> emptySpot = new ArrayList<Point>();
-		for (int i = 0; i < map.length; i++) {
-			for (int j = 0; j < map.length; j++) {
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < height; j++) {
 			if (map[i][j] == 0) {
 				emptySpot.add(new Point (i, j));
 				}
@@ -84,5 +93,6 @@ public class Maze {
 		}
 		Collections.shuffle(emptySpot);
 		this.goal = emptySpot.get(0);
+		this.playerStart = emptySpot.get(1);
 	}
 }
