@@ -35,6 +35,7 @@ public class Player implements KeyListener {
 			backward = true;		
 		if (keypress.getKeyCode() == KeyEvent.VK_R) {x=startX;y=startY;direction=0;}
 		if (keypress.getKeyCode() == KeyEvent.VK_ESCAPE) {engine.setIsTitle(true);}
+		if (keypress.getKeyCode() == KeyEvent.VK_M) {engine.setShowMap(!engine.isShowMap());}
 			
 	}
 

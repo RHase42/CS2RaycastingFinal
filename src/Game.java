@@ -6,7 +6,7 @@ import javax.swing.JPanel;
 public class Game extends JFrame implements Runnable {
 
 	private static final long serialVersionUID = 1L;
-	private boolean isRunning, isTitle;
+	private boolean isRunning, isTitle, isShowMap;
 	private Player player;
 	private BufferedImage image;
 	private int[][] map;
@@ -14,9 +14,9 @@ public class Game extends JFrame implements Runnable {
 	private Point goal;
 	private Point playerStart;
 
-	private final int FOV = 80;
-	private final int WIDTH = 640;
-	private final int HEIGHT = 480;
+	private final int FOV = 75;
+	private final int WIDTH = 800;
+	private final int HEIGHT = 600;
 	private final int FPS = 60;
 	private final double ANGLE_INC = (double)FOV/(double)WIDTH;
 	private final double PROJ_DIST = (HEIGHT/2) / Math.tan(Math.toRadians(FOV/2));
@@ -52,7 +52,11 @@ public class Game extends JFrame implements Runnable {
 	private void draw () {
 		Graphics g = frame.getGraphics();
 		Graphics buffG = image.getGraphics();
-		draw3D(buffG);
+		if (!isShowMap) {
+			draw3D(buffG);
+		} else {
+			draw2D(buffG);
+		}
 		g.drawImage(image, 0, 0, this);
 		g.dispose();
 	}
@@ -65,24 +69,25 @@ public class Game extends JFrame implements Runnable {
 		for (int i = 0; i < map.length; i++) {
 			for (int j = 0; j < map.length; j++) {
 				if (map[i][j] == 0) {
-					g.fillRect((i*32), (j*32), 32, 32);
+					g.fillRect((i*16), (j*16), 16, 16);
 				}
 			}
 		}
 		g.setColor(Color.RED);
-		g.fillOval((int)player.x - 10, (int)player.y - 10, 20, 20);
+		g.fillOval((int)player.x/2 - 5, (int)player.y/2 - 5, 10, 10);
 
 		g.setColor(Color.PINK);
-		g.fillOval((int)goal.getX() * 32, (int)goal.getY() * 32, 20, 20);
+		g.fillOval((int)goal.getX() * 16, (int)goal.getY() * 16, 10, 10);
 		
-		g.setColor(Color.BLUE);
-		for (int i = -(WIDTH/2); i < (WIDTH/2); i++) {
-			double angle = Math.toRadians(player.direction + (i *ANGLE_INC));
-			double sin = Math.sin(angle);
-			double cos = Math.cos(angle);
-			double length = rayCast(player.x, player.y, angle, i, g);		
-			g.drawLine((int)player.x, (int)player.y, (int)(player.x + length*sin), (int)(player.y + length *cos));
-		}
+//		Old raycasting test in 2D; no need to show on minimap
+//		g.setColor(Color.BLUE);
+//		for (int i = (WIDTH/2); i > -(WIDTH/2); i--) {
+//			double angle = Math.toRadians(player.direction + (i *ANGLE_INC));
+//			double sin = Math.sin(angle);
+//			double cos = Math.cos(angle);
+//			double length = rayCast(player.x, player.y, angle, i, g);		
+//			g.drawLine((int)player.x, (int)player.y, (int)(player.x + length*sin), (int)(player.y + length *cos));
+//		}
 	}
 	
 	private void draw3D(Graphics g) {
@@ -146,7 +151,7 @@ public class Game extends JFrame implements Runnable {
 		newMap();
 		this.goal = maze.getGoal();
 		this.playerStart = maze.getStart();
-		player = new Player((int)(playerStart.getX()*32) + 16, (int)(playerStart.getY()*32), 0, map, this, frame);
+		player = new Player((int)(playerStart.getX()*32) + 16, (int)(playerStart.getY()*32) + 16, 0, map, this, frame);
 		start();
 	}
 	
@@ -167,6 +172,14 @@ public class Game extends JFrame implements Runnable {
 			return;
 		}
 		isRunning = false;
+	}
+	
+	void setShowMap(boolean isMap) {
+		this.isShowMap = isMap;
+	}
+	
+	boolean isShowMap() {
+		return isShowMap;
 	}
 	
 	void setIsTitle(boolean isTitle) {
