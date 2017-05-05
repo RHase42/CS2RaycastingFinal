@@ -70,7 +70,6 @@ public class Player implements KeyListener {
 			engine.setIsTitle(true);
 		}
 		if (keys[KeyEvent.VK_M]) {
-			System.out.println("Map set to " + !engine.isShowMap());
 			engine.setShowMap(!engine.isShowMap());
 			keys[KeyEvent.VK_M] = false;
 		}

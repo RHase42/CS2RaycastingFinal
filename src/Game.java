@@ -25,6 +25,22 @@ public class Game extends JFrame implements Runnable {
 		this.setShowMap(false);
 	}
 	
+	private void init() {
+		setTitle("3D Maze");
+		setSize(WIDTH, HEIGHT);
+		setResizable(false);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setVisible(true);
+		this.titleScreen = new Title(WIDTH,HEIGHT, this);
+		this.add(titleScreen);
+		this.raycast = new Raycasting(this);
+		this.add(raycast);
+		setShowMap(false);
+		setIsTitle(true);
+		setSize(WIDTH, HEIGHT);
+		start();
+	}
+
 	public void run() {
 		init();
 		while(isRunning) {
@@ -42,23 +58,7 @@ public class Game extends JFrame implements Runnable {
 			}
 		}
 	}
-		
-	private void init() {
-		setTitle("3D Maze");
-		setSize(WIDTH, HEIGHT);
-		setResizable(false);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setVisible(true);
-		this.titleScreen = new Title(WIDTH,HEIGHT, this);
-		this.add(titleScreen);
-		this.raycast = new Raycasting(this);
-		this.add(raycast);
-		setShowMap(false);
-		setIsTitle(true);
-		setSize(WIDTH, HEIGHT);
-		start();
-	}
-	
+
 	private void start() {
 		if (isRunning) {
 			return;
@@ -67,19 +67,23 @@ public class Game extends JFrame implements Runnable {
 		new Thread(this).start();
 	}
 	
-	void stop () {
+	void stop() {
 		if (!isRunning) {
 			return;
 		}
 		isRunning = false;
 	}
+
+	boolean isShowMap() {
+		return isShowMap;
+	}
+	
+	boolean isTitle() {
+		return isTitle;
+	}
 	
 	void setShowMap(boolean isMap) {
 		this.isShowMap = isMap;
-	}
-	
-	boolean isShowMap() {
-		return isShowMap;
 	}
 	
 	void setIsTitle(boolean isTitle) {
@@ -97,9 +101,6 @@ public class Game extends JFrame implements Runnable {
 			titleScreen.transferFocus();
 			raycast.requestFocus();
 		}
-	}
-	boolean isTitle() {
-		return isTitle;
 	}
 	
 	public static void main(String[] args) {

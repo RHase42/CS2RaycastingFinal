@@ -3,14 +3,20 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.HeadlessException;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.util.Scanner;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 
 public class Title extends JPanel implements ActionListener {
 	
@@ -75,7 +81,24 @@ public class Title extends JPanel implements ActionListener {
         layout.gridx = x;
         layout.gridy = y;
         this.add(comp, layout);
+    }	
+    private JTextArea credits() throws IOException {
+        JTextArea credits = new JTextArea ();
+        credits.setEditable(false);
+        credits.setFont(new Font("Dialog",Font.PLAIN, 12));
+        credits.append(readFile(new File("readme.txt")));
+        return credits;
     }
+	public String readFile(File file) throws IOException {
+		Scanner fileScanner = new Scanner(file);
+		String contents = "";
+		while (fileScanner.hasNextLine()) {
+			String line = fileScanner.nextLine();
+			contents += line + "\n";
+		}
+		fileScanner.close();
+		return contents;
+	}
 
     void setActive (boolean isActive) {
 		Component [] buttons = this.getComponents();
@@ -87,7 +110,7 @@ public class Title extends JPanel implements ActionListener {
     	this.setVisible(isActive);
     	this.update(this.getGraphics());
     }
-
+    
 	@Override
 	public void actionPerformed(ActionEvent action) {
 		if (action.getActionCommand().equals("Run an easy maze")) {
@@ -99,6 +122,13 @@ public class Title extends JPanel implements ActionListener {
 			engine.newMap(17,17);
 			engine.setIsTitle(false);
 			this.setActive(false);
+		}
+		if (action.getActionCommand().equals("Help/Credits")) {
+			try {
+				JOptionPane.showMessageDialog(this, credits(), "Help/Credits", JOptionPane.PLAIN_MESSAGE);
+			} catch (HeadlessException | IOException e) {
+				e.printStackTrace();
+			}
 		}
 		if (action.getActionCommand().equals("Exit")) {
 			engine.stop();
