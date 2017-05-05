@@ -3,7 +3,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-
 public class Maze {
 	private int width;
 	private int height;
@@ -93,6 +92,12 @@ public class Maze {
 		}
 		Collections.shuffle(emptySpot);
 		this.goal = emptySpot.get(0);
-		this.playerStart = emptySpot.get(1);
+		double goalRange = this.goal.getX() + this.goal.getY();
+		for (int i = 1; i < emptySpot.size(); i++) {
+			Point playerStart = emptySpot.get(i);
+			double playerRange = playerStart.getX() + playerStart.getY();
+			if (Math.abs(playerRange - goalRange) > width/2)
+			this.playerStart = playerStart;
+		}
 	}
 }

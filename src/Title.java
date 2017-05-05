@@ -13,13 +13,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class Title extends JPanel implements ActionListener {
+	
 	GridBagConstraints layout;
 	Font titleFont, buttonFont;
 	JLabel title;
 	Game engine;
-	
 	private int width, height;
-	
 	private static final long serialVersionUID = 1L;
 
 	public Title (int w, int h, Game eng) {
@@ -29,6 +28,7 @@ public class Title extends JPanel implements ActionListener {
 		this.setSize(width, height);
 		this.setBackground(Color.CYAN);
 		this.setLayout(new GridBagLayout());
+		this.setDoubleBuffered(true);
 		setLayout();
 	}
 	
@@ -54,7 +54,7 @@ public class Title extends JPanel implements ActionListener {
 		fastest.addActionListener(this);
 		setGridBag(fastest, 0, 3, 15, 15, 15, 15, GridBagConstraints.CENTER,GridBagConstraints.NONE);
 		
-		JButton credits = new JButton("Credits");
+		JButton credits = new JButton("Help/Credits");
 		credits.setFont(buttonFont);
 		credits.addActionListener(this);
 		setGridBag(credits, 0, 4, 15, 15, 15, 15, GridBagConstraints.CENTER,GridBagConstraints.NONE);
@@ -78,16 +78,25 @@ public class Title extends JPanel implements ActionListener {
     }
 
     void setActive (boolean isActive) {
-    	this.setVisible(isActive);
 		Component [] buttons = this.getComponents();
 		for (Component button: buttons) {
+			button.setVisible(isActive);
 			button.setEnabled(isActive);
 		}
+		this.setEnabled(isActive);
+    	this.setVisible(isActive);
+    	this.update(this.getGraphics());
     }
-    
+
 	@Override
 	public void actionPerformed(ActionEvent action) {
 		if (action.getActionCommand().equals("Run an easy maze")) {
+			engine.newMap(10,10);
+			engine.setIsTitle(false);
+			this.setActive(false);
+		}
+		if (action.getActionCommand().equals("Run a hard maze")) {
+			engine.newMap(17,17);
 			engine.setIsTitle(false);
 			this.setActive(false);
 		}
@@ -95,5 +104,4 @@ public class Title extends JPanel implements ActionListener {
 			engine.stop();
 		}
 	}
-
 }
