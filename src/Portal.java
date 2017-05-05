@@ -13,12 +13,8 @@ public class Portal implements GameObject {
 	public Portal (Point goal, Game engine) {
 		this.loc = goal;
 		this.engine = engine;
-	    try
-	    {
-	      img = ImageIO.read(new File("res/portal.png"));
-	    }
-	    catch (IOException e)
-	    {}
+	    try {img = ImageIO.read(new File("res/portal.png"));}
+	    catch (IOException e) {}
 	}
 	
 	@Override
