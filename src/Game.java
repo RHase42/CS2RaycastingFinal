@@ -9,7 +9,7 @@ public class Game extends JFrame implements Runnable {
 	private Maze maze;
 	private Point playerStart;
 	private Title titleScreen;
-	private Raycasting raycast;
+	private Camera raycast;
 	Player player;
 
 	private final int WIDTH = 800;
@@ -33,7 +33,7 @@ public class Game extends JFrame implements Runnable {
 		setVisible(true);
 		this.titleScreen = new Title(WIDTH,HEIGHT, this);
 		this.add(titleScreen);
-		this.raycast = new Raycasting(this);
+		this.raycast = new Camera(this);
 		this.add(raycast);
 		setShowMap(false);
 		setIsTitle(true);

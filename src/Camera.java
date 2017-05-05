@@ -4,7 +4,7 @@ import java.awt.Point;
 import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 
-public class Raycasting extends JPanel {
+public class Camera extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private Point goal;
@@ -18,7 +18,7 @@ public class Raycasting extends JPanel {
 	private final double PROJ_DIST = (HEIGHT/2) / Math.tan(Math.toRadians(FOV/2));
 	private final int CENTER_HEIGHT = HEIGHT/2;
 	
-	public Raycasting(Game engine) {
+	public Camera(Game engine) {
 		this.engine = engine;
 		image = new BufferedImage (WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 	}

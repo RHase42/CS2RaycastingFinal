@@ -2,10 +2,8 @@ import java.awt.Component;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-public class Player implements KeyListener {
-	double x, y, startX, startY,direction;
-	private double moveSpeed = .75;
-	private double rotSpeed = 1.5;
+public class Player extends Actor implements KeyListener {
+	double startX, startY;
 	private int[][] map;
 	private boolean[] keys;
 	Game engine;
