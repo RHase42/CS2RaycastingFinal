@@ -11,6 +11,7 @@ public class Game extends JFrame implements Runnable {
 	private Title titleScreen;
 	private Camera raycast;
 	Player player;
+	Portal goal;
 
 	private final int WIDTH = 800;
 	private final int HEIGHT = 600;
@@ -20,7 +21,8 @@ public class Game extends JFrame implements Runnable {
 		maze = new Maze(x, y);
 		this.map = maze.generateMap();
 		this.playerStart = maze.getStart();
-		raycast.setMap(map, maze);
+		this.goal = new Portal(maze.getGoal(), this);
+		raycast.setMap(map, goal);
 		player = new Player((int)(playerStart.getX()*32) + 16, (int)(playerStart.getY()*32) + 16, 0, map, this, raycast);
 		this.setShowMap(false);
 	}
@@ -45,16 +47,17 @@ public class Game extends JFrame implements Runnable {
 		init();
 		while(isRunning) {
 			long frameTime = System.currentTimeMillis();
-
 			frameTime = (1000 / FPS) - (System.currentTimeMillis() - frameTime);
 			if (frameTime > 0) {
 				try {
 					Thread.sleep(frameTime);
+					if (!isTitle) {
+						player.update();
+						raycast.draw();
+						player.addTime(frameTime*.65);
+						goal.update();
+					}
 				} catch (Exception e) {}
-			}
-			if (!isTitle) {
-				player.update();
-				raycast.draw();
 			}
 		}
 	}

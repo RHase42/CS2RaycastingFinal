@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
@@ -7,7 +8,7 @@ import javax.swing.JPanel;
 public class Camera extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	private Point goal;
+	private Portal goal;
 	private BufferedImage image;
 	private Game engine;
 	private int[][] map;
@@ -32,6 +33,7 @@ public class Camera extends JPanel {
 			} else {
 				draw2D(buffG);
 			}
+			
 		}
 		g.drawImage(image, 0, 0, engine);
 		g.dispose();
@@ -52,6 +54,7 @@ public class Camera extends JPanel {
 		g.setColor(Color.RED);
 		g.fillOval((int)engine.player.x/2 - 5, (int)engine.player.y/2 - 5, 10, 10);
 		g.setColor(Color.GREEN);
+		Point goal = this.goal.getPos();
 		g.fillOval((int)goal.getX() * 16, (int)goal.getY() * 16, 10, 10);
 		
 //		Old raycasting test in 2D; no need to show on minimap
@@ -75,6 +78,9 @@ public class Camera extends JPanel {
 			double length = rayCast(engine.player.x, engine.player.y, angle, i, g);
 			drawWall(g, length, i+(WIDTH/2), angle);
 		}
+		g.setColor(Color.WHITE);
+		g.setFont( new Font("Dialog",Font.BOLD, 36));
+		g.drawString("Time: " + (int)engine.player.getTime(), WIDTH/32, HEIGHT/16);
 	}
 	
 	private double rayCast (double x, double y,double angle, int i, Graphics g) {
@@ -102,8 +108,8 @@ public class Camera extends JPanel {
         g.drawLine(x, CENTER_HEIGHT - (int)wallHeight, x, CENTER_HEIGHT + (int)wallHeight);
 	}
 
-	void setMap(int[][] map, Maze maze) {
+	void setMap(int[][] map, Portal goal) {
 		this.map = map;
-		this.goal = maze.getGoal();
+		this.goal = goal;
 	}
 }
