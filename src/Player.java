@@ -59,11 +59,11 @@ public class Player extends Actor implements KeyListener {
 			}
 		}
 		if (keys[KeyEvent.VK_A] || keys[KeyEvent.VK_LEFT]) {
-			direction -= rotSpeed;
+			direction += rotSpeed;
 			direction = normalizeTurn(direction);
 		}
 		if (keys[KeyEvent.VK_D] || keys[KeyEvent.VK_RIGHT]) {
-			direction += rotSpeed;
+			direction -= rotSpeed;
 			direction = normalizeTurn(direction);
 		}
 		if (keys[KeyEvent.VK_R]) {
