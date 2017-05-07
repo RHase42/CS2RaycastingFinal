@@ -60,11 +60,11 @@ public class Camera extends JPanel {
 //		Old raycasting test in 2D; no need to show on minimap
 //		g.setColor(Color.BLUE);
 //		for (int i = (WIDTH/2); i > -(WIDTH/2); i--) {
-//			double angle = Math.toRadians(player.direction + (i *ANGLE_INC));
+//			double angle = Math.toRadians(engine.player.direction + (i *ANGLE_INC));
 //			double sin = Math.sin(angle);
 //			double cos = Math.cos(angle);
-//			double length = rayCast(player.x, player.y, angle, i, g);		
-//			g.drawLine((int)player.x, (int)player.y, (int)(player.x + length*sin), (int)(player.y + length *cos));
+//			double length = rayCast(engine.player.x, engine.player.y, angle, i, g);		
+//			g.drawLine((int)engine.player.x, (int)engine.player.y, (int)(engine.player.x + length*sin), (int)(engine.player.y + length *cos));
 //		}
 	}
 	
@@ -105,7 +105,7 @@ public class Camera extends JPanel {
         	intensity = 255;
         }
         g.setColor(new Color(255-intensity,0,255-intensity));
-        g.drawLine(x, CENTER_HEIGHT - (int)wallHeight, x, CENTER_HEIGHT + (int)wallHeight);
+        g.drawLine(Math.abs(x-799), CENTER_HEIGHT - (int)wallHeight, Math.abs(x-799), CENTER_HEIGHT + (int)wallHeight);
 	}
 
 	void setMap(int[][] map, Portal goal) {

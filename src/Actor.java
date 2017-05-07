@@ -2,8 +2,8 @@ import java.awt.Point;
 
 public abstract class Actor implements GameObject {
 	double x, y, direction;
-	double moveSpeed = .75;
-	double rotSpeed = 1.5;
+	double moveSpeed = 1.1;
+	double rotSpeed = 2.5;
 	Point pos;
 	
 	@Override
