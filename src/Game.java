@@ -58,15 +58,6 @@ public class Game extends JFrame implements Runnable {
 			if (frameTime > 0) {
 				try {
 					Thread.sleep(frameTime);
-<<<<<<< HEAD
-=======
-					if (!isTitle) {
-						player.update();
-						raycast.draw();
-						player.addTime(frameTime);
-						goal.update();
-					}
->>>>>>> 61f1f1e295209bcc464bc0fc32110cfdea60c705
 				} catch (Exception e) {}
 			}
 		}
