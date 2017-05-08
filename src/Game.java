@@ -5,21 +5,21 @@ public class Game extends JFrame implements Runnable {
 
 	private static final long serialVersionUID = 1L;
 	private boolean isRunning, isTitle, isShowMap;
-	private int[][] map;
-	private Maze maze;
 	private Point playerStart;
 	private Title titleScreen;
-	private Camera raycast;
-	Player player;
-	Portal goal;
+	protected Camera raycast;
+	protected Maze maze;
+	protected Player player;
+	protected Portal goal;
+	protected int[][] map;
 
 	private final int WIDTH = 800;
 	private final int HEIGHT = 600;
 	private final int FPS = 60;
 
-	void newMap(int x, int y) {
+	protected void newMap(int x, int y) {
 		maze = new Maze(x, y);
-		this.map = maze.generateMap();
+		this.map = maze.getMap();
 		this.playerStart = maze.getStart();
 		this.goal = new Portal(maze.getGoal(), this);
 		raycast.setMap(map, goal);
@@ -37,6 +37,7 @@ public class Game extends JFrame implements Runnable {
 		this.add(titleScreen);
 		this.raycast = new Camera(this);
 		this.add(raycast);
+		this.map = null; 
 		setShowMap(false);
 		setIsTitle(true);
 		setSize(WIDTH, HEIGHT);
@@ -48,15 +49,15 @@ public class Game extends JFrame implements Runnable {
 		while(isRunning) {
 			long frameTime = System.currentTimeMillis();
 			frameTime = (1000 / FPS) - (System.currentTimeMillis() - frameTime);
+			if (!isTitle) {
+				player.update();
+				raycast.draw();
+				player.addTime(frameTime*1.3);
+				goal.update();
+			}
 			if (frameTime > 0) {
 				try {
 					Thread.sleep(frameTime);
-					if (!isTitle) {
-						player.update();
-						raycast.draw();
-						player.addTime(frameTime);
-						goal.update();
-					}
 				} catch (Exception e) {}
 			}
 		}
@@ -69,26 +70,26 @@ public class Game extends JFrame implements Runnable {
 		isRunning = true;
 	}
 	
-	void stop() {
+	protected void stop() {
 		if (!isRunning) {
 			return;
 		}
 		isRunning = false;
 	}
 
-	boolean isShowMap() {
+	protected boolean isShowMap() {
 		return isShowMap;
 	}
 	
-	boolean isTitle() {
+	protected boolean isTitle() {
 		return isTitle;
 	}
 	
-	void setShowMap(boolean isMap) {
+	protected void setShowMap(boolean isMap) {
 		this.isShowMap = isMap;
 	}
 	
-	void setIsTitle(boolean isTitle) {
+	protected void setIsTitle(boolean isTitle) {
 		this.isTitle = isTitle;
 		if (isTitle) {
 			titleScreen.setActive(true);

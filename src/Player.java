@@ -6,10 +6,10 @@ public class Player extends Actor implements KeyListener {
 	double startX, startY;
 	private int[][] map;
 	private boolean[] keys;
-	Game engine;
-	double time;
+	protected Game engine;
+	protected double time;
 
-	public Player (int x, int y, int direction, int[][] map, Game engine, Component t) {
+	protected Player (int x, int y, int direction, int[][] map, Game engine, Component t) {
 		this.time = 0;
 		this.x = x;
 		this.startX = x;
@@ -79,7 +79,7 @@ public class Player extends Actor implements KeyListener {
 		}
 	}
 
-	public double normalizeTurn(double angle) {
+	private double normalizeTurn(double angle) {
 		double a = angle % 360;
 		if (a < 0) {
 			a += 360;
@@ -87,11 +87,11 @@ public class Player extends Actor implements KeyListener {
 		return a;
 	}
 	
-	public void addTime(double time) {
+	protected void addTime(double time) {
 		this.time += time/1000;
 	}
 	
-	public double getTime() {
+	protected double getTime() {
 		return time;
 	}
 	

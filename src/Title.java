@@ -5,11 +5,14 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.HeadlessException;
 import java.awt.Insets;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
+import java.util.Stack;
+
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -19,10 +22,10 @@ import javax.swing.JTextArea;
 
 public class Title extends JPanel implements ActionListener {
 	
-	GridBagConstraints layout;
-	Font titleFont, buttonFont;
-	JLabel title;
-	Game engine;
+	private GridBagConstraints layout;
+	private Font titleFont, buttonFont;
+	private JLabel title;
+	private Game engine;
 	private int width, height;
 	private static final long serialVersionUID = 1L;
 
@@ -88,7 +91,7 @@ public class Title extends JPanel implements ActionListener {
         credits.append(readFile(new File("readme.txt")));
         return credits;
     }
-	public String readFile(File file) throws IOException {
+	private String readFile(File file) throws IOException {
 		Scanner fileScanner = new Scanner(file);
 		String contents = "";
 		while (fileScanner.hasNextLine()) {
@@ -99,7 +102,7 @@ public class Title extends JPanel implements ActionListener {
 		return contents;
 	}
 
-    void setActive (boolean isActive) {
+    protected void setActive (boolean isActive) {
 		Component [] buttons = this.getComponents();
 		for (Component button: buttons) {
 			button.setVisible(isActive);
@@ -121,6 +124,17 @@ public class Title extends JPanel implements ActionListener {
 			engine.newMap(17,17);
 			engine.setIsTitle(false);
 			this.setActive(false);
+		}
+		if (action.getActionCommand().equals("Fastest route for previous maze")) {
+			if (engine.map != null) {
+				Stack<Point> path = engine.maze.shortestPath();
+				engine.raycast.test = true;
+				engine.raycast.test2 = path;
+				engine.setIsTitle(false);
+				this.setActive(false);
+			} else {
+				JOptionPane.showMessageDialog(this, "Please run a map first!");
+			}
 		}
 		if (action.getActionCommand().equals("Help/Credits")) {
 			try {

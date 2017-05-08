@@ -1,20 +1,13 @@
 import java.awt.Point;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 
 public class Portal implements GameObject {
-	Point loc;
-	BufferedImage img;	
-	Game engine;
+	private Point loc;
+	private Game engine;
 	
 	public Portal (Point goal, Game engine) {
 		this.loc = goal;
 		this.engine = engine;
-	    try {img = ImageIO.read(new File("res/portal.png"));}
-	    catch (IOException e) {}
 	}
 	
 	@Override
