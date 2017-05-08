@@ -145,6 +145,7 @@ public class Camera extends JPanel {
         	intensity = 255;
         }
         g.setColor(new Color(255-intensity,0,255-intensity));
+<<<<<<< HEAD
 //        g.drawLine(Math.abs(x-799), CENTER_HEIGHT - (int)wallHeight, Math.abs(x-799), CENTER_HEIGHT + (int)wallHeight);
         if (foundGoal && (adjDist > goalDist)) {
         	g.drawLine(Math.abs(x-799), CENTER_HEIGHT - (int)wallHeight, Math.abs(x-799), CENTER_HEIGHT + (int)wallHeight);
@@ -158,6 +159,9 @@ public class Camera extends JPanel {
 	private void drawGoal(Graphics g, int x, double angle) {
         double goalHeight = (8*PROJ_DIST / (goalDist));
         g.drawLine(Math.abs(x-799), CENTER_HEIGHT - (int)(goalHeight), Math.abs(x-799), CENTER_HEIGHT + (int)(goalHeight));
+=======
+        g.drawLine(Math.abs(x-799), CENTER_HEIGHT - (int)wallHeight, Math.abs(x-799), CENTER_HEIGHT + (int)wallHeight);
+>>>>>>> 61f1f1e295209bcc464bc0fc32110cfdea60c705
 	}
 
 	protected void setMap(int[][] map, Portal goal) {
