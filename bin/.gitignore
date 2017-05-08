@@ -1,6 +1,10 @@
+/Actor.class
 /Camera.class
 /Game.class
+/GameObject.class
 /Maze$Compass.class
 /Maze.class
+/PathfinderBot.class
 /Player.class
+/Portal.class
 /Title.class

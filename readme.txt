@@ -1,4 +1,4 @@
-Welcome to 3D Maze (Working Title)!
+Welcome to Labyrinthian!
 
 Traverse a randomly generated maze in a three-dimensional environment! See how fast you can make it to the goal.
 

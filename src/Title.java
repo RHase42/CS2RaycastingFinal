@@ -42,7 +42,7 @@ public class Title extends JPanel implements ActionListener {
 	
 	private void setLayout() {
     	titleFont = new Font("Dialog",Font.BOLD, 48);
-        title = new JLabel("3D Maze (Working Title)");
+        title = new JLabel("Labyrinthian");
         title.setFont(titleFont);
 		setGridBag(title, 0, 0, 20, 20, 20, 20, GridBagConstraints.CENTER,GridBagConstraints.NONE);
 		buttonFont = new Font("Dialog",Font.PLAIN, 20);
