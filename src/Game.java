@@ -169,7 +169,7 @@ public class Game extends JFrame implements Runnable {
 	
 	/**
 	 * Toggles whether bot is running on/off
-	 * @param isBot
+	 * @param isBot - boolean to toggle bot on/off
 	 */
 	protected void setBot(boolean isBot) {
 		this.isBot = isBot;

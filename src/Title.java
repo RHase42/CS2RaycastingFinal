@@ -111,7 +111,7 @@ public class Title extends JPanel implements ActionListener {
     /**
      * Generates the credits field by reading from the readme.txt file 
      * @return - returns JTextArea with credits String properly attached
-     * @throws IOException
+     * @throws IOException - Exception handler if file not found
      */
     private JTextArea credits() throws IOException {
         JTextArea credits = new JTextArea ();
@@ -125,7 +125,7 @@ public class Title extends JPanel implements ActionListener {
 	 * Reads a file passed to it
 	 * @param file - file passed
 	 * @return - contents of file
-	 * @throws IOException
+	 * @throws IOException - Exception handler if file not found
 	 */
 	private String readFile(File file) throws IOException {
 		Scanner fileScanner = new Scanner(file);

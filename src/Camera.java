@@ -31,6 +31,8 @@ public class Camera extends JPanel {
 	/**
 	 * Constructor to create a new Camera object
 	 * @param engine - Game runnable for cross referencing objects
+	 * @param w - width of frame
+	 * @param h - height of frame
 	 */
 	public Camera(Game engine, int w, int h) {
 		this.WIDTH = w;
@@ -68,6 +70,7 @@ public class Camera extends JPanel {
 	/**
 	 * Draws the 2D map onto the BufferedImage's graphics object
 	 * @param g - Graphics object that coincides with the BufferedImage
+	 * @param actor - Actor currently running maze
 	 */
 	private void draw2D(Graphics g, Actor actor) {
 	
@@ -110,6 +113,7 @@ public class Camera extends JPanel {
 	/**
 	 * Draws the 3D world for the player onto the BufferedImage's graphics object
 	 * @param g - graphics object of the BufferedImage
+	 * @param actor - Actor currently running maze
 	 */
 	private void draw3D(Graphics g, Actor actor) {
 		g.setColor(Color.CYAN);
@@ -164,6 +168,7 @@ public class Camera extends JPanel {
 	 * @param dist - distance calculated between cast ray and wall
 	 * @param x - X-coordinates where to draw line on Graphics object
 	 * @param angle - angle at which the ray was cast
+	 * @param actor - Actor currently running maze
 	 */
 	private void drawWall(Graphics g, double dist, int x, double angle, Actor actor) {
 		double relativeAngle = Math.toRadians(actor.direction) - angle;

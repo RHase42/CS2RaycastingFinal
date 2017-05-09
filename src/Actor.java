@@ -15,6 +15,10 @@ public abstract class Actor implements GameObject, KeyListener {
 	double rotSpeed = 2;
 	Point pos;
 	
+	/* Return to menu and toggle 2D map
+	 * (non-Javadoc)
+	 * @see GameObject#update()
+	 */
 	public void update() {
 		if (keys[KeyEvent.VK_ESCAPE]) {
 			if (engine.isBot()) {
@@ -26,6 +30,38 @@ public abstract class Actor implements GameObject, KeyListener {
 			engine.setShowMap(!engine.isShowMap());
 			keys[KeyEvent.VK_M] = false;
 		}
+	}
+	
+	/**
+	 * Rotate left
+	 */
+	public void turnLeft() {
+		direction += rotSpeed;
+		direction = normalizeTurn(direction);
+	}
+	
+	/**
+	 * Rotate right
+	 */
+	public void turnRight() {
+		direction -= rotSpeed;
+		direction = normalizeTurn(direction);
+	}
+	
+	/**
+	 * Move forwards
+	 */
+	public void moveForward() {
+		x -= Math.cos(Math.toRadians(direction + 90)) * moveSpeed;
+		y += Math.sin(Math.toRadians(direction + 90)) * moveSpeed;
+	}
+	
+	/**
+	 * Move backwards
+	 */
+	public void moveBackwards() {
+		x += Math.cos(Math.toRadians(direction + 90)) * moveSpeed;
+		y -= Math.sin(Math.toRadians(direction + 90)) * moveSpeed;
 	}
 	
 	/* Return Actor's current position

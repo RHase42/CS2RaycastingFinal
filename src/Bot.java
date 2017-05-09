@@ -19,6 +19,7 @@ public class Bot extends Actor {
 	 * Constructor
 	 * @param route - Stack that contains all points bot must visit
 	 * @param engine - Game class
+	 * @param t - Component to add Keylistener to
 	 */
 	public Bot(Stack<Point> route, Game engine, Component t) {
 		this.time = 0;
@@ -49,16 +50,13 @@ public class Bot extends Actor {
 				turnRight = true;
 			}
 			if (turnLeft) {
-				direction += rotSpeed;
-				direction = normalizeTurn(direction);
+				this.turnLeft();
 			} else {
-				direction -= rotSpeed;
-				direction = normalizeTurn(direction);
+				this.turnRight();
 			}
 		}
 		if (!pos.equals(nextPos) && direction == nextDir) {
-			x -= Math.cos(Math.toRadians(direction + 90)) * moveSpeed;
-			y += Math.sin(Math.toRadians(direction + 90)) * moveSpeed;
+			this.moveForward();
 			this.setPos((int)x/32, (int)y/32);
 		} 
 		if (pos.equals(nextPos) && !center) {
@@ -74,8 +72,7 @@ public class Bot extends Actor {
 		}
 		if (center) {
 			if (centerMoves < 16) {
-				x -= Math.cos(Math.toRadians(direction + 90)) * moveSpeed;
-				y += Math.sin(Math.toRadians(direction + 90)) * moveSpeed;
+				this.moveForward();
 				centerMoves++;
 			} else {
 				center = false;

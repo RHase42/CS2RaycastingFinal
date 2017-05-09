@@ -45,9 +45,7 @@ public class Player extends Actor implements KeyListener {
 		if (keys[KeyEvent.VK_W] || keys[KeyEvent.VK_UP]) {
 			double prevX, prevY;
 			prevX = x; prevY = y;
-			x -= Math.cos(Math.toRadians(direction + 90)) * moveSpeed;
-			y += Math.sin(Math.toRadians(direction + 90)) * moveSpeed;
-			
+			this.moveForward();			
 			if (map[(int)x/32][(int)y/32] == 1) {
 				x = prevX;
 				y = prevY;
@@ -58,9 +56,7 @@ public class Player extends Actor implements KeyListener {
 		if (keys[KeyEvent.VK_S] || keys[KeyEvent.VK_DOWN]) {
 			double prevX, prevY;
 			prevX = x; prevY = y;
-			x += Math.cos(Math.toRadians(direction + 90)) * moveSpeed;
-			y -= Math.sin(Math.toRadians(direction + 90)) * moveSpeed;
-			
+			this.moveBackwards();			
 			if (map[(int)x/32][(int)y/32] == 1) {
 				x = prevX;
 				y = prevY;
@@ -69,12 +65,10 @@ public class Player extends Actor implements KeyListener {
 			}
 		}
 		if (keys[KeyEvent.VK_A] || keys[KeyEvent.VK_LEFT]) {
-			direction += rotSpeed;
-			direction = normalizeTurn(direction);
+			this.turnLeft();
 		}
 		if (keys[KeyEvent.VK_D] || keys[KeyEvent.VK_RIGHT]) {
-			direction -= rotSpeed;
-			direction = normalizeTurn(direction);
+			this.turnRight();
 		}
 		if (keys[KeyEvent.VK_R]) {
 			x=startX; y=startY; direction=0;
@@ -85,7 +79,7 @@ public class Player extends Actor implements KeyListener {
 	
 	/**
 	 * Checks whether player completed map or not
-	 * @param completed
+	 * @param completed - check if completed
 	 */
 	public void setCompleted(boolean completed) {
 		this.completed = completed;

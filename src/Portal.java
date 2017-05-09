@@ -16,6 +16,7 @@ public class Portal implements GameObject {
 	 * Constructor
 	 * @param goal - Point that contains goal x,y coordinates
  	 * @param engine - main Game object for cross-referencing
+ 	 * @param actor - Actor currently running maze
 	 */
 	public Portal (Point goal, Game engine, Actor actor) {
 		this.actor = actor;
