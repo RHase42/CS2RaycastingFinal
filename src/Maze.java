@@ -1,3 +1,9 @@
+/**
+ * Maze class that allows for generation of a randomized maze, alongside methods to generate a random start/finish point, and find
+ * the shortest path between the start to the finish. 
+ * @author Robin A. and Zach D.
+ */
+
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,6 +16,7 @@ import java.util.Stack;
 import java.util.Queue;
 
 public class Maze {
+	
 	private int width;
 	private int height;
 	private int[][] maze;
@@ -18,6 +25,11 @@ public class Maze {
 	private HashSet<Point> visited;
 	private Map<Point, Point> prev;
 
+	/**
+	 * Constructor to create maze; doubling width/height adds walls, then adding 1 makes sure all walls are covered
+	 * @param x - height of Maze
+	 * @param y - width of Maze 
+	 */
 	public Maze(int x, int y) {
 		this.visited = new HashSet<Point>();
 		this.width = x*2+1;
@@ -36,6 +48,11 @@ public class Maze {
 		setPoints();
 	}
 	
+	/**
+	 * Recursive function that generates a random maze using a recursive backtracking algorithm
+	 * @param cWidth - current Width index
+	 * @param cHeight - current Height index
+	 */
 	private void createMaze(int cWidth, int cHeight) {
 		Compass[] direction = Compass.values();
 		Collections.shuffle(Arrays.asList(direction));
@@ -52,19 +69,20 @@ public class Maze {
 		} 
 	}
 
+	/**
+	 * Boolean that makes sure a specified index is valid for the Maze array
+	 * @param index - index being checked 
+	 * @param max - bounds that index must be smaller than
+	 * @return - returns whether index is valid or not
+	 */
 	private boolean arrayBounds (int index, int max) {
 		return (index >= 0 && index < max );
 	}
-	
-	private enum Compass {
-		N(0, -2, 0, -1),S(0, 2, 0, 1),W(-2, 0, -1, 0),E(2, 0, 1, 0);
-		private int genX, genY, mapX, mapY;
-		private Compass(int compassX, int compassY, int mapX, int mapY) {
-			this.genX = compassX; this.genY = compassY;
-			this.mapX = mapX; this.mapY = mapY;
-		}
-	}
 
+	/**
+	 * Sets random points for both the player's start and the exit of the maze; bounds to make sure player and
+	 * goal aren't too close isnt precise, but at least it stops direct spawns side-by-side 
+	 */
 	private void setPoints () {
 		ArrayList<Point> emptySpot = new ArrayList<Point>();
 		for (int i = 0; i < width; i++) {
@@ -85,6 +103,12 @@ public class Maze {
 		}
 	}
 	
+	/**
+	 * Breath-first traversal that finds the goal relative to the player start, and keeps track of where each 
+	 * index was visited from via use of a HashMap. After finding the goal, each Point from the goal backward to
+	 * the playerStart is pushed into a Stack, which is then returned for use by the PathfindingBot
+	 * @return - returns a Stack with all the Points leading from start to goal, with starting point on top
+	 */
 	public Stack<Point> shortestPath() {
 		resetVisited();
 		Stack <Point> shortestPath = new Stack<Point>();
@@ -115,28 +139,31 @@ public class Maze {
 		return shortestPath;		
 	}
 	
+	/**
+	 * Resets HashSet for use in ShortestPath method
+	 */
 	public void resetVisited() {
 		this.visited = new HashSet<Point>();
 	}
+	
+	/**
+	 * @return - returns Goal of map
+	 */
 	public Point getGoal() {
 		return goal;
 	}
 	
+	/**
+	 * @return - returns starting point of map
+	 */
 	public Point getStart () {
 		return playerStart;
 	} 
 	
+	/**
+	 * @return - returns int array which contains the map
+	 */
 	public int[][] getMap() {
 		return maze;
-	}
-	
-	public static void main (String[] args) {
-		Maze maze = new Maze(5,5);
-		System.out.println("starting point: " + maze.getStart().toString());
-		System.out.println("ending point: " + maze.getGoal().toString());
-		Stack<Point> path = maze.shortestPath();
-		while (!path.isEmpty()) {
-			System.out.println(path.pop());
-		}
 	}
 }

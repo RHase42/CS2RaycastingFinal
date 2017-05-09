@@ -1,16 +1,32 @@
+/**
+ * Player class that keeps track of user KeyPresses and updates any necessary values based off of which keys the
+ * user presses
+ * @author Robin A. and Zach D.
+ */
 import java.awt.Component;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 public class Player extends Actor implements KeyListener {
+	
 	double startX, startY;
 	private int[][] map;
 	private boolean[] keys;
 	protected Game engine;
-	protected double time;
+	public boolean completed;
 
+	/**
+	 * Constructor
+	 * @param x - player's starting X value
+	 * @param y - player's starting Y value
+	 * @param direction - starting  direction player is facing
+	 * @param map - int array with coinciding map
+	 * @param engine - Game object for crossreferencing 
+	 * @param t - Component that keylistener is placed on; should always be a Camera object
+	 */
 	protected Player (int x, int y, int direction, int[][] map, Game engine, Component t) {
 		this.time = 0;
+		this.completed = false;
 		this.x = x;
 		this.startX = x;
 		this.y = y;
@@ -23,16 +39,29 @@ public class Player extends Actor implements KeyListener {
 		t.addKeyListener(this);
 	}
 
+	/* Checks to see which key has been pressed, and changes the value of a Boolean array at that key's index to
+	 * true
+	 * (non-Javadoc)
+	 * @see java.awt.event.KeyListener#keyPressed(java.awt.event.KeyEvent)
+	 */
 	@Override
 	public void keyPressed(KeyEvent keypress) {
 		keys[keypress.getKeyCode()] = true;
 	}
 
+	/* Changes keyPressed value to false
+	 * (non-Javadoc)
+	 * @see java.awt.event.KeyListener#keyReleased(java.awt.event.KeyEvent)
+	 */
 	@Override
 	public void keyReleased(KeyEvent keyRelease) {
 		keys[keyRelease.getKeyCode()] = false;	
 	}
 	
+	/* Runs player logic based off of whether certain keys are pressed or not
+	 * (non-Javadoc)
+	 * @see GameObject#update()
+	 */
 	public void update() {
 		if (keys[KeyEvent.VK_W] || keys[KeyEvent.VK_UP]) {
 			double prevX, prevY;
@@ -56,6 +85,8 @@ public class Player extends Actor implements KeyListener {
 			if (map[(int)x/32][(int)y/32] == 1) {
 				x = prevX;
 				y = prevY;
+			} else {
+				this.setPos(x/32, y/32);
 			}
 		}
 		if (keys[KeyEvent.VK_A] || keys[KeyEvent.VK_LEFT]) {
@@ -78,23 +109,18 @@ public class Player extends Actor implements KeyListener {
 			keys[KeyEvent.VK_M] = false;
 		}
 	}
-
-	private double normalizeTurn(double angle) {
-		double a = angle % 360;
-		if (a < 0) {
-			a += 360;
-		}
-		return a;
-	}
 	
-	protected void addTime(double time) {
-		this.time += time/1000;
+	/**
+	 * Checks whether player completed map or not
+	 * @param completed
+	 */
+	public void setCompleted(boolean completed) {
+		this.completed = completed;
 	}
-	
-	protected double getTime() {
-		return time;
-	}
-	
+	/* Unused
+	 * (non-Javadoc)
+	 * @see java.awt.event.KeyListener#keyTyped(java.awt.event.KeyEvent)
+	 */
 	@Override
 	public void keyTyped(KeyEvent arg0) {}
 }

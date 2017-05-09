@@ -1,3 +1,8 @@
+/**
+ * Title screen that allows users to choose a difficulty level, see shortest path of previous maze generated, view the 
+ * help/credits screen, and exit the game
+ * @author Robin A. and Zach D.
+ */
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -5,14 +10,11 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.HeadlessException;
 import java.awt.Insets;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
-import java.util.Stack;
-
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -29,6 +31,11 @@ public class Title extends JPanel implements ActionListener {
 	private int width, height;
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * @param w - width of JPanel
+	 * @param h - height of JPanel
+	 * @param eng - Game object for cross-referencing 
+	 */
 	public Title (int w, int h, Game eng) {
 		this.engine = eng;
 		this.width = w;
@@ -40,6 +47,10 @@ public class Title extends JPanel implements ActionListener {
 		setLayout();
 	}
 	
+	/**
+	 * Sets the layout of the Title; sets where the buttons go, adds actionlisteners, alongside sets the name of the game
+	 * at the top
+	 */
 	private void setLayout() {
     	titleFont = new Font("Dialog",Font.BOLD, 48);
         title = new JLabel("Labyrinthian");
@@ -73,6 +84,18 @@ public class Title extends JPanel implements ActionListener {
 		setGridBag(exit, 0, 5, 15, 15, 15, 15, GridBagConstraints.CENTER,GridBagConstraints.NONE);
 	}
 	
+    /**
+     * Aligns JComponents to their proper positioning on the GridBagConstraints
+     * @param comp - component to add
+     * @param x - x-value on GridBag
+     * @param y - y-value on Gridbag
+     * @param top - top insets
+     * @param left - left insets
+     * @param bot - bottom insets 
+     * @param right - right insets
+     * @param align - Alignments, if any
+     * @param fill - Fill values, if any
+     */
     private void setGridBag (JComponent comp, int x, int y,int top, int left, int bot, int right, int align, int fill) {
         layout = new GridBagConstraints();
         layout.insets = new Insets(top, left, bot, right);
@@ -83,7 +106,13 @@ public class Title extends JPanel implements ActionListener {
         layout.gridx = x;
         layout.gridy = y;
         this.add(comp, layout);
-    }	
+    }
+    
+    /**
+     * Generates the credits field by reading from the readme.txt file 
+     * @return - returns JTextArea with credits String properly attached
+     * @throws IOException
+     */
     private JTextArea credits() throws IOException {
         JTextArea credits = new JTextArea ();
         credits.setEditable(false);
@@ -91,6 +120,13 @@ public class Title extends JPanel implements ActionListener {
         credits.append(readFile(new File("readme.txt")));
         return credits;
     }
+    
+	/**
+	 * Reads a file passed to it
+	 * @param file - file passed
+	 * @return - contents of file
+	 * @throws IOException
+	 */
 	private String readFile(File file) throws IOException {
 		Scanner fileScanner = new Scanner(file);
 		String contents = "";
@@ -102,6 +138,11 @@ public class Title extends JPanel implements ActionListener {
 		return contents;
 	}
 
+    /**
+     * Sets whether the title screen is currently active or not, changing any necessary values to activate/deactivate
+     * the title screen
+     * @param isActive - boolean that would toggle active on/off
+     */
     protected void setActive (boolean isActive) {
 		Component [] buttons = this.getComponents();
 		for (Component button: buttons) {
@@ -113,6 +154,10 @@ public class Title extends JPanel implements ActionListener {
     	this.update(this.getGraphics());
     }
     
+	/* Checks to see which Button was pressed, and runs whatever logic coincides with each button
+	 * (non-Javadoc)
+	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
 	@Override
 	public void actionPerformed(ActionEvent action) {
 		if (action.getActionCommand().equals("Run an easy maze")) {
@@ -127,9 +172,7 @@ public class Title extends JPanel implements ActionListener {
 		}
 		if (action.getActionCommand().equals("Fastest route for previous maze")) {
 			if (engine.map != null) {
-				Stack<Point> path = engine.maze.shortestPath();
-				engine.raycast.test = true;
-				engine.raycast.test2 = path;
+				engine.newBot();
 				engine.setIsTitle(false);
 				this.setActive(false);
 			} else {

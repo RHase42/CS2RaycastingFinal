@@ -3,13 +3,11 @@
  * player is currently looking at the map.
  * @author Robin A.and Zach D.
  */
-
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
-import java.util.Stack;
 import javax.swing.JPanel;
 
 public class Camera extends JPanel {
@@ -21,22 +19,24 @@ public class Camera extends JPanel {
 	private int[][] map;
 	private boolean foundGoal;
 	private double goalDist;
-	public boolean test;
-	public Stack<Point> test2;
 	private final int FOV = 75;
-	private final int WIDTH = 800;
-	private final int HEIGHT = 600;
-	private final double ANGLE_INC = (double)FOV/(double)WIDTH;
-	private final double PROJ_DIST = (HEIGHT/2) / Math.tan(Math.toRadians(FOV/2));
-	private final int CENTER_HEIGHT = HEIGHT/2;
+	private final int WIDTH;
+	private final int HEIGHT;
+	private final double ANGLE_INC;
+	private final double PROJ_DIST;
+	private final int CENTER_HEIGHT;
 	
 	/**
 	 * Constructor to create a new Camera object
 	 * @param engine - Game runnable for cross referencing objects
 	 */
-	public Camera(Game engine) {
-		test = false;
+	public Camera(Game engine, int w, int h) {
+		this.WIDTH = w;
+		this.HEIGHT = h;
 		this.engine = engine;
+		this.ANGLE_INC = (double)FOV/(double)WIDTH;
+		this.CENTER_HEIGHT = HEIGHT/2;
+		this.PROJ_DIST = (HEIGHT/2) / Math.tan(Math.toRadians(FOV/2));
 		image = new BufferedImage (WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 	}
 	
@@ -48,15 +48,15 @@ public class Camera extends JPanel {
 		Graphics g = this.getGraphics();
 		Graphics buffG = image.getGraphics();
 		if (!engine.isTitle()) {
-			if (!engine.isShowMap()) {
-				draw3D(buffG);
-			} else {
+			if (!engine.isShowMap() && !engine.isBot()) {
+				draw3D(buffG, engine.player);
+			} else if (!engine.isBot()){
 				draw2D(buffG);
+			} else {
+				draw3D(buffG, engine.bot);
 			}
-			
-		} else if (test) {
-			draw2D(buffG, test2);
 		}
+
 		g.drawImage(image, 0, 0, engine);
 		g.dispose();
 	}
@@ -93,49 +93,25 @@ public class Camera extends JPanel {
 //			g.drawLine((int)engine.player.x, (int)engine.player.y, (int)(engine.player.x + length*sin), (int)(engine.player.y + length *cos));
 //		}
 	}
-	
-	private void draw2D(Graphics g, Stack<Point> test) {
-		g.setColor(Color.BLACK);
-		g.fillRect(0, 0, WIDTH, HEIGHT);
-		
-		g.setColor(Color.WHITE);
-		for (int i = 0; i < map.length; i++) {
-			for (int j = 0; j < map.length; j++) {
-				if (map[i][j] == 0) {
-					g.fillRect((i*16), (j*16), 16, 16);
-				}
-			}
-		}
-		g.setColor(Color.BLUE);		
-		while (!test2.isEmpty()) {
-			Point a = test2.pop();
-			g.fillRect(((int)a.getX()*16), ((int)a.getY()*16), 16, 16);
-		}
-		g.setColor(Color.RED);
-		g.fillOval((int)engine.player.x/2 - 5, (int)engine.player.y/2 - 5, 10, 10);
-		g.setColor(Color.GREEN);
-		Point goal = this.goal.getPos();
-		g.fillOval((int)goal.getX() * 16, (int)goal.getY() * 16, 10, 10);
-	}
 
 	/**
 	 * Draws the 3D world for the player onto the BufferedImage's graphics object
 	 * @param g - graphics object of the BufferedImage
 	 */
-	private void draw3D(Graphics g) {
+	private void draw3D(Graphics g, Actor actor) {
 		g.setColor(Color.CYAN);
 		g.fillRect(0, 0, WIDTH, HEIGHT/2);
 		g.setColor(Color.PINK);
 		g.fillRect(0, HEIGHT/2, WIDTH, HEIGHT/2);
 		for (int i = -(WIDTH/2); i < (WIDTH/2); i++) {
-			double angle = Math.toRadians(engine.player.direction + (i *ANGLE_INC));
-			double length = rayCast(engine.player.x, engine.player.y, angle, i, g);
-			drawWall(g, length, i+(WIDTH/2), angle);
+			double angle = Math.toRadians(actor.direction + (i *ANGLE_INC));
+			double length = rayCast(actor.x, actor.y, angle, i, g);
+			drawWall(g, length, i+(WIDTH/2), angle, actor);
 			foundGoal = false;
 		}
 		g.setColor(Color.WHITE);
-		g.setFont( new Font("Dialog",Font.BOLD, 36));
-		g.drawString("Time: " + (int)engine.player.getTime(), WIDTH/32, HEIGHT/16);
+		g.setFont(new Font("Dialog",Font.BOLD, 36));
+		g.drawString("Time: " + (int)actor.getTime(), WIDTH/32, HEIGHT/16);
 	}
 	
 	/**
@@ -176,8 +152,8 @@ public class Camera extends JPanel {
 	 * @param x - X-coordinates where to draw line on Graphics object
 	 * @param angle - angle at which the ray was cast
 	 */
-	private void drawWall(Graphics g, double dist, int x, double angle) {
-		double relativeAngle = Math.toRadians(engine.player.direction) - angle;
+	private void drawWall(Graphics g, double dist, int x, double angle, Actor actor) {
+		double relativeAngle = Math.toRadians(actor.direction) - angle;
 		double adjDist = dist * Math.cos(relativeAngle);
         double wallHeight = (32*PROJ_DIST / (adjDist));
         int intensity = (int)(adjDist);
@@ -186,11 +162,11 @@ public class Camera extends JPanel {
         }
         g.setColor(new Color(255-intensity,0,255-intensity));
         if (foundGoal && (adjDist > goalDist)) {
-        	g.drawLine(Math.abs(x-799), CENTER_HEIGHT - (int)wallHeight, Math.abs(x-799), CENTER_HEIGHT + (int)wallHeight);
+        	g.drawLine(Math.abs(x-(WIDTH-1)), CENTER_HEIGHT - (int)wallHeight, Math.abs(x-(WIDTH-1)), CENTER_HEIGHT + (int)wallHeight);
         	g.setColor(Color.BLUE);
         	drawGoal(g, x, angle);
         } else {
-            g.drawLine(Math.abs(x-799), CENTER_HEIGHT - (int)wallHeight, Math.abs(x-799), CENTER_HEIGHT + (int)wallHeight);
+            g.drawLine(Math.abs(x-(WIDTH-1)), CENTER_HEIGHT - (int)wallHeight, Math.abs(x-(WIDTH-1)), CENTER_HEIGHT + (int)wallHeight);
         }
 	}
 	
@@ -202,7 +178,7 @@ public class Camera extends JPanel {
 	 */
 	private void drawGoal(Graphics g, int x, double angle) {
         double goalHeight = (8*PROJ_DIST / (goalDist));
-        g.drawLine(Math.abs(x-799), CENTER_HEIGHT - (int)(goalHeight), Math.abs(x-799), CENTER_HEIGHT + (int)(goalHeight));
+        g.drawLine(Math.abs(x-(WIDTH-1)), CENTER_HEIGHT - (int)(goalHeight), Math.abs(x-(WIDTH-1)), CENTER_HEIGHT + (int)(goalHeight));
 	}
 
 	/**

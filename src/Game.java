@@ -4,22 +4,27 @@
  * @author Robin A. and Zach D.
  */
 import java.awt.*;
+import java.util.Stack;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.JFrame;
+import java.io.*;
 
 public class Game extends JFrame implements Runnable {
 
 	private static final long serialVersionUID = 1L;
-	private boolean isRunning, isTitle, isShowMap;
+	private boolean isRunning, isTitle, isShowMap, isBot;
 	private Point playerStart;
 	private Title titleScreen;
 	protected Camera raycast;
 	protected Maze maze;
 	protected Player player;
+	protected Bot bot;
 	protected Portal goal;
 	protected int[][] map;
 
-	private final int WIDTH = 800;
-	private final int HEIGHT = 600;
+	private final int WIDTH = 1024;
+	private final int HEIGHT = 768;
 	private final int FPS = 60;
 
 	/**
@@ -31,10 +36,17 @@ public class Game extends JFrame implements Runnable {
 		maze = new Maze(x, y);
 		this.map = maze.getMap();
 		this.playerStart = maze.getStart();
-		this.goal = new Portal(maze.getGoal(), this);
-		raycast.setMap(map, goal);
 		player = new Player((int)(playerStart.getX()*32) + 16, (int)(playerStart.getY()*32) + 16, 0, map, this, raycast);
+		this.goal = new Portal(maze.getGoal(), this, player);
+		raycast.setMap(map, goal);
 		this.setShowMap(false);
+	}
+	
+	protected void newBot() {
+		Stack<Point> path = maze.shortestPath();
+		bot = new Bot(path, this);
+		this.goal = new Portal(maze.getGoal(), this, bot);
+		this.setBot(true);
 	}
 	
 	/**
@@ -49,32 +61,38 @@ public class Game extends JFrame implements Runnable {
 		setVisible(true);
 		this.titleScreen = new Title(WIDTH,HEIGHT, this);
 		this.add(titleScreen);
-		this.raycast = new Camera(this);
+		this.raycast = new Camera(this, WIDTH, HEIGHT);
 		this.add(raycast);
-		this.map = null; 
+		this.map = null; 		
+		this.isBot = false;
 		setShowMap(false);
 		setIsTitle(true);
 		setSize(WIDTH, HEIGHT);
 		start();
 	}
 
-	/* 
-	 * Game loop that causes updates to only happen variant on the FPS set; draws screen, keeps count of time, and updates positions of
-	 * player and how close player is to the goal
+	/* Game loop that causes updates to only happen variant on the FPS set; draws screen, keeps count of time, and 
+	 * updates positions of player and how close player is to the goal
 	 * (non-Javadoc)
 	 * @see java.lang.Runnable#run()
 	 */
 	public void run() {
 		init();
+		playSong();
 		while(isRunning) {
 			long frameTime = System.currentTimeMillis();
 			frameTime = (1000 / FPS) - (System.currentTimeMillis() - frameTime);
-			if (!isTitle) {
+			if (isBot) {
+				bot.update();
+				raycast.draw();
+				bot.addTime(frameTime*1.3);
+				goal.update();
+			} else if (!isTitle) {
 				player.update();
 				raycast.draw();
 				player.addTime(frameTime*1.3);
 				goal.update();
-			}
+			} 
 			if (frameTime > 0) {
 				try {
 					Thread.sleep(frameTime);
@@ -82,6 +100,21 @@ public class Game extends JFrame implements Runnable {
 			}
 		}
 	}
+	
+	/**
+	 * Loops music while program is open!
+	 */
+	private void playSong() {
+		try {
+			File music = new File("res/e1m1.wav");
+			Clip clip = AudioSystem.getClip();
+			clip.open(AudioSystem.getAudioInputStream(music));
+			clip.start();
+			clip.loop(Clip.LOOP_CONTINUOUSLY);
+			Thread.sleep(100);
+		} catch (Exception e) {}
+	}
+
 
 	/**
 	 * Initializes the game loop variable so the game properly starts
@@ -120,11 +153,26 @@ public class Game extends JFrame implements Runnable {
 	}
 	
 	/**
+	 * Returns whether bot is running or not
+	 * @return - isBot
+	 */
+	protected boolean isBot() {
+		return isBot;
+	}
+	/**
 	 * Sets the 2D map in game on/off 
 	 * @param isMap - boolean that toggles 2D map on/off
 	 */
 	protected void setShowMap(boolean isMap) {
 		this.isShowMap = isMap;
+	}
+	
+	/**
+	 * Toggles whether bot is running on/off
+	 * @param isBot
+	 */
+	protected void setBot(boolean isBot) {
+		this.isBot = isBot;
 	}
 	
 	/**
