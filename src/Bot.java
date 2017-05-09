@@ -11,7 +11,8 @@ public class Bot extends Actor {
 	private Stack<Point> route;
 	private Point nextPos;
 	private double nextDir;
-	private boolean turnLeft, turnRight;
+	private int centerMoves;
+	private boolean turnLeft, turnRight, center;
 	Game engine;
 	
 	/**
@@ -21,6 +22,7 @@ public class Bot extends Actor {
 	 */
 	public Bot(Stack<Point> route, Game engine) {
 		this.time = 0;
+		this.centerMoves = 0;
 		this.engine = engine;
 		this.route = route;
 		this.pos = route.pop();
@@ -37,7 +39,7 @@ public class Bot extends Actor {
 	 */
 	@Override
 	public void update() {
-		if (direction != nextDir) {
+		if (direction != nextDir && !center) {
 			if (normalizeTurn(direction + 90) == nextDir && !turnLeft && !turnRight) {
 				turnLeft = true;
 			} else {
@@ -56,14 +58,25 @@ public class Bot extends Actor {
 			y += Math.sin(Math.toRadians(direction + 90)) * moveSpeed;
 			this.setPos((int)x/32, (int)y/32);
 		} 
-		if (pos.equals(nextPos)) {
+		if (pos.equals(nextPos) && !center) {
 			if (nextPos != null) {
+				center = true;
 				setNextPos();
 				nextDir = findFacing();
 				turnLeft = false; turnRight = false;
 			} else {
 				System.out.println("goal!");
 				engine.setBot(false);
+			}
+		}
+		if (center) {
+			if (centerMoves < 16) {
+				x -= Math.cos(Math.toRadians(direction + 90)) * moveSpeed;
+				y += Math.sin(Math.toRadians(direction + 90)) * moveSpeed;
+				centerMoves++;
+			} else {
+				center = false;
+				centerMoves = 0;
 			}
 		}
 	}

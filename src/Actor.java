@@ -8,7 +8,7 @@ public abstract class Actor implements GameObject {
 	
 	double time;
 	double x, y, direction;
-	double moveSpeed = 1.1;
+	double moveSpeed = 1;
 	double rotSpeed = 2;
 	Point pos;
 	
