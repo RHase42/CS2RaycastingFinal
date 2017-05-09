@@ -22,6 +22,7 @@ public class Game extends JFrame implements Runnable {
 	protected Bot bot;
 	protected Portal goal;
 	protected int[][] map;
+	protected Stack<Point> path;
 
 	private final int WIDTH = 1024;
 	private final int HEIGHT = 768;
@@ -43,8 +44,8 @@ public class Game extends JFrame implements Runnable {
 	}
 	
 	protected void newBot() {
-		Stack<Point> path = maze.shortestPath();
-		bot = new Bot(path, this);
+		path = maze.shortestPath();
+		bot = new Bot(path, this, raycast);
 		this.goal = new Portal(maze.getGoal(), this, bot);
 		this.setBot(true);
 	}
@@ -114,7 +115,6 @@ public class Game extends JFrame implements Runnable {
 			Thread.sleep(100);
 		} catch (Exception e) {}
 	}
-
 
 	/**
 	 * Initializes the game loop variable so the game properly starts

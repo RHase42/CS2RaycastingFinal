@@ -3,6 +3,7 @@
  * @author Robin A. and Zach D.
  */
 
+import java.awt.Component;
 import java.awt.Point;
 import java.util.Stack;
 
@@ -13,14 +14,13 @@ public class Bot extends Actor {
 	private double nextDir;
 	private int centerMoves;
 	private boolean turnLeft, turnRight, center;
-	Game engine;
 	
 	/**
 	 * Constructor
 	 * @param route - Stack that contains all points bot must visit
 	 * @param engine - Game class
 	 */
-	public Bot(Stack<Point> route, Game engine) {
+	public Bot(Stack<Point> route, Game engine, Component t) {
 		this.time = 0;
 		this.centerMoves = 0;
 		this.engine = engine;
@@ -29,8 +29,10 @@ public class Bot extends Actor {
 		this.x = ((pos.getX()*32) + 16);
 		this.y = ((pos.getY()*32) + 16);
 		this.direction = findFacing();
+		this.keys = new boolean[255];
 		setNextPos();
 		nextDir = findFacing();
+		t.addKeyListener(this);
 	}
 	
 	/* Makes moves for bot based off current position and next position to visit
@@ -39,6 +41,7 @@ public class Bot extends Actor {
 	 */
 	@Override
 	public void update() {
+		super.update();
 		if (direction != nextDir && !center) {
 			if (normalizeTurn(direction + 90) == nextDir && !turnLeft && !turnRight) {
 				turnLeft = true;

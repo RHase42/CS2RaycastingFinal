@@ -11,8 +11,6 @@ public class Player extends Actor implements KeyListener {
 	
 	double startX, startY;
 	private int[][] map;
-	private boolean[] keys;
-	protected Game engine;
 	public boolean completed;
 
 	/**
@@ -37,25 +35,6 @@ public class Player extends Actor implements KeyListener {
 		this.engine = engine;
 		this.keys = new boolean[255];
 		t.addKeyListener(this);
-	}
-
-	/* Checks to see which key has been pressed, and changes the value of a Boolean array at that key's index to
-	 * true
-	 * (non-Javadoc)
-	 * @see java.awt.event.KeyListener#keyPressed(java.awt.event.KeyEvent)
-	 */
-	@Override
-	public void keyPressed(KeyEvent keypress) {
-		keys[keypress.getKeyCode()] = true;
-	}
-
-	/* Changes keyPressed value to false
-	 * (non-Javadoc)
-	 * @see java.awt.event.KeyListener#keyReleased(java.awt.event.KeyEvent)
-	 */
-	@Override
-	public void keyReleased(KeyEvent keyRelease) {
-		keys[keyRelease.getKeyCode()] = false;	
 	}
 	
 	/* Runs player logic based off of whether certain keys are pressed or not
@@ -101,13 +80,7 @@ public class Player extends Actor implements KeyListener {
 			x=startX; y=startY; direction=0;
 			this.time = 0;
 		}
-		if (keys[KeyEvent.VK_ESCAPE]) {
-			engine.setIsTitle(true);
-		}
-		if (keys[KeyEvent.VK_M]) {
-			engine.setShowMap(!engine.isShowMap());
-			keys[KeyEvent.VK_M] = false;
-		}
+		super.update();
 	}
 	
 	/**
@@ -117,10 +90,4 @@ public class Player extends Actor implements KeyListener {
 	public void setCompleted(boolean completed) {
 		this.completed = completed;
 	}
-	/* Unused
-	 * (non-Javadoc)
-	 * @see java.awt.event.KeyListener#keyTyped(java.awt.event.KeyEvent)
-	 */
-	@Override
-	public void keyTyped(KeyEvent arg0) {}
 }

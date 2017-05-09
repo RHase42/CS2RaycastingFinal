@@ -8,6 +8,8 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
+import java.util.Stack;
+
 import javax.swing.JPanel;
 
 public class Camera extends JPanel {
@@ -50,10 +52,12 @@ public class Camera extends JPanel {
 		if (!engine.isTitle()) {
 			if (!engine.isShowMap() && !engine.isBot()) {
 				draw3D(buffG, engine.player);
-			} else if (!engine.isBot()){
-				draw2D(buffG);
+			} else if (engine.isBot() && !engine.isShowMap()){
+				draw3D(buffG, engine.bot); 
+			} else if (engine.isBot() && engine.isShowMap()){
+				draw2D(buffG, engine.bot);
 			} else {
-				draw3D(buffG, engine.bot);
+				draw2D(buffG, engine.player);
 			}
 		}
 
@@ -65,7 +69,8 @@ public class Camera extends JPanel {
 	 * Draws the 2D map onto the BufferedImage's graphics object
 	 * @param g - Graphics object that coincides with the BufferedImage
 	 */
-	private void draw2D(Graphics g) {
+	private void draw2D(Graphics g, Actor actor) {
+	
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, WIDTH, HEIGHT);
 		
@@ -77,8 +82,16 @@ public class Camera extends JPanel {
 				}
 			}
 		}
+		if (engine.isBot()) {
+			Stack<Point> route = engine.maze.shortestPath();
+			g.setColor(Color.GREEN);	
+			while (!route.isEmpty()) {
+				Point a = route.pop();
+				g.fillRect(((int)a.getX()*16), ((int)a.getY()*16), 16, 16);
+			}
+		}
 		g.setColor(Color.RED);
-		g.fillOval((int)engine.player.x/2 - 5, (int)engine.player.y/2 - 5, 10, 10);
+		g.fillOval((int)actor.x/2 - 5, (int)actor.y/2 - 5, 10, 10);
 		g.setColor(Color.BLUE);
 		Point goal = this.goal.getPos();
 		g.fillOval((int)goal.getX() * 16, (int)goal.getY() * 16, 10, 10);

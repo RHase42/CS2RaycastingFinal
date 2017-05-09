@@ -3,14 +3,30 @@
  * @author Robin A. and Zach D.
  */
 import java.awt.Point;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
-public abstract class Actor implements GameObject {
-	
+public abstract class Actor implements GameObject, KeyListener {
+	Game engine;
+	boolean[] keys;
 	double time;
 	double x, y, direction;
 	double moveSpeed = 1;
 	double rotSpeed = 2;
 	Point pos;
+	
+	public void update() {
+		if (keys[KeyEvent.VK_ESCAPE]) {
+			if (engine.isBot()) {
+				engine.setBot(false);
+			}
+			engine.setIsTitle(true);
+		}
+		if (keys[KeyEvent.VK_M]) {
+			engine.setShowMap(!engine.isShowMap());
+			keys[KeyEvent.VK_M] = false;
+		}
+	}
 	
 	/* Return Actor's current position
 	 * (non-Javadoc)
@@ -55,4 +71,30 @@ public abstract class Actor implements GameObject {
 	protected double getTime() {
 		return time;
 	}
+
+	/* Checks to see which key has been pressed, and changes the value of a Boolean array at that key's index to
+	 * true
+	 * (non-Javadoc)
+	 * @see java.awt.event.KeyListener#keyPressed(java.awt.event.KeyEvent)
+	 */
+	@Override
+	public void keyPressed(KeyEvent keypress) {
+		keys[keypress.getKeyCode()] = true;
+	}
+
+	/* Changes keyPressed value to false
+	 * (non-Javadoc)
+	 * @see java.awt.event.KeyListener#keyReleased(java.awt.event.KeyEvent)
+	 */
+	@Override
+	public void keyReleased(KeyEvent keyRelease) {
+		keys[keyRelease.getKeyCode()] = false;	
+	}
+	
+	/* Unused
+	 * (non-Javadoc)
+	 * @see java.awt.event.KeyListener#keyTyped(java.awt.event.KeyEvent)
+	 */
+	@Override
+	public void keyTyped(KeyEvent arg0) {}
 }
